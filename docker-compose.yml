@@ -1,0 +1,105 @@
+ # In questo file ho orchestrato l'intera infrastruttura del mio progetto.
+# Ho scelto Docker Compose perché mi permette di definire tutti i servizi (container)
+# in un unico posto, garantendo che l'ambiente sia identico ogni volta che lo avvio.
+
+services:
+  # ---------- HDFS: Il mio Data Lake ----------
+  # Ho scelto HDFS come storage primario per la sua tolleranza ai guasti e scalabilità.
+  
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    hostname: namenode   # ✅ FIX: hostname stabile dentro la rete docker
+    environment:
+      - CLUSTER_NAME=marketpulse
+    env_file:
+      - .env
+    ports:
+      - "9870:9870"   # Espondo la Web UI per monitorare lo stato dei nodi e i file.
+      - "9000:9000"   # Questa è la porta fondamentale per le operazioni di file system.
+    volumes:
+      - namenode:/hadoop/dfs/name # Uso un volume per rendere persistenti i metadati.
+    networks:
+      - bdnet
+
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode
+    hostname: datanode   # ✅ FIX: hostname stabile (usato nei redirect WebHDFS)
+    env_file:
+      - .env
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870 # Mi assicuro che il namenode sia attivo prima di partire.
+    ports:
+      - "9864:9864"   # Interfaccia web per ispezionare i blocchi di dati memorizzati.
+    volumes:
+      - datanode:/hadoop/dfs/data # Qui vengono memorizzati fisicamente i miei file grezzi.
+    networks:
+      - bdnet
+    depends_on:
+      - namenode
+
+    # ---------- Spark: Il mio Motore di Calcolo Distribuito ----------
+    # Ho separato Master e Worker per simulare un vero cluster di elaborazione.
+
+  spark-master:
+    image: apache/spark:3.5.1-python3
+    container_name: spark-master
+    # Avvio il processo master e mantengo il container attivo con tail -f.
+    command: ["bash","-lc","/opt/spark/sbin/start-master.sh -h spark-master && tail -f /dev/null"]
+    ports:
+      - "8080:8080"   # Fondamentale per vedere la Spark UI e lo stato dei miei Job.
+      - "7077:7077"   # Porta di comunicazione interna del cluster Spark.
+    networks:
+      - bdnet
+
+  spark-worker:
+    image: apache/spark:3.5.1-python3
+    container_name: spark-worker
+    depends_on:
+      - spark-master
+    # Dico esplicitamente al worker di connettersi al mio master specifico.
+    command: ["bash","-lc","/opt/spark/sbin/start-worker.sh spark://spark-master:7077 && tail -f /dev/null"]
+    ports:
+      - "8081:8081"   # UI del worker per monitorare l'uso di CPU e RAM durante i test.
+    networks:
+      - bdnet
+
+  # ---------- Polyglot Persistence Layer ----------
+  # Ho scelto tre database diversi perché ogni dato ha esigenze differenti.
+
+  cassandra:
+    image: cassandra:4.1
+    container_name: cassandra
+    ports:
+      - "9042:9042" # Porta standard per CQL (Cassandra Query Language).
+    volumes:
+      - cassandra_data:/var/lib/cassandra # Persistenza dei dati finanziari strutturati.
+    networks:
+      - bdnet
+
+  mongodb:
+    image: mongo:7
+    container_name: mongodb
+    ports:
+      - "27017:27017" # Porta per le operazioni documentali.
+    volumes:
+      - mongo_data:/data/db # Persistenza dei file JSON delle news.
+    networks:
+      - bdnet
+
+
+# ---------- Infrastruttura di Rete e Storage ----------
+
+networks:
+  bdnet: 
+    # Ho creato una rete dedicata (bridge) affinché i container si riconoscano 
+    # tra loro semplicemente tramite il nome (es. Spark punta a 'cassandra').
+
+volumes:
+  # Definisco i volumi esterni per garantire che i miei dati sopravvivano 
+  # anche se i container vengono distrutti e ricreati.
+  namenode:
+  datanode:
+  cassandra_data:
+  mongo_data:

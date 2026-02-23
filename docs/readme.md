@@ -45,38 +45,40 @@ Requisiti
 - Connessione Internet (Yahoo Finance API)  
 - RAM consigliata: ≥ 8GB  
 
-Quick Start (Step-by-Step)
-1. Avvio dell'Infrastruttura
-Apri il terminale nella root del progetto ed esegui lo stack Docker:
+Quick Start (Step-by-Step)  
+1. Avvio dell'Infrastruttura  
+Apri il terminale nella root del progetto ed esegui lo stack Docker:  
 
-PowerShell
-docker-compose up -d
+PowerShell  
+docker-compose up -d  
 
-Verifica che tutti i 6 container siano in stato "Running" tramite Docker Desktop.
+Verifica che tutti i 6 container siano in stato "Running" tramite Docker Desktop.  
 
-2. Inizializzazione (Bootstrap)
-Esegui gli script di automazione per configurare le directory HDFS e gli schemi NoSQL:
+2. Inizializzazione (Bootstrap)  
+Esegui gli script di automazione per configurare le directory HDFS e gli schemi NoSQL:  
 
-PowerShell
-.\scripts\automation\init_hdfs.ps1
-.\scripts\automation\init_cassandra.ps1
-.\scripts\automation\init_mongo.ps1
-3. Ingestion dei Dati (Raw Layer)
-Recupera i dati aggiornati dalle API esterne e caricali su HDFS:
+PowerShell  
+.\scripts\automation\init_hdfs.ps1  
+.\scripts\automation\init_cassandra.ps1  
+.\scripts\automation\init_mongo.ps1  
 
-PowerShell
-# Ingestion prezzi (CSV) e news (JSON)
-python .\scripts\ingestion\download_yahoo_prices_2min.py
-python .\scripts\ingestion\download_yahoo_news.py
-4. Processing e Caricamento (Silver & Gold Layer)
-Esegui la pipeline Spark per trasformare i dati in Parquet e popolare i database operativi:
+3. Ingestion dei Dati (Raw Layer)  
+Recupera i dati aggiornati dalle API esterne e caricali su HDFS:  
 
-PowerShell
-.\scripts\processing\run_pipeline.ps1
+PowerShell  
+Ingestion prezzi (CSV) e news (JSON)  
+python .\scripts\ingestion\download_yahoo_prices_2min.py  
+python .\scripts\ingestion\download_yahoo_news.py  
 
-Questo script automatizza l'esecuzione di spark_to_parquet.py e spark_to_nosql.py nel cluster Spark.
+4. Processing e Caricamento (Silver & Gold Layer)  
+Esegui la pipeline Spark per trasformare i dati in Parquet e popolare i database operativi:  
 
-5. Analisi Finale (Insight)
+PowerShell  
+.\scripts\processing\run_pipeline.ps1  
+
+Questo script automatizza l'esecuzione di spark_to_parquet.py e spark_to_nosql.py nel cluster Spark.  
+
+5. Analisi Finale (Insight)  
 Genera il report decisionale incrociando i dati di MongoDB e Cassandra:
 
 PowerShell
@@ -90,9 +92,7 @@ Hadoop Web UI: http://localhost:9870 (Browsing HDFS).
 
 Spark Master UI: http://localhost:8080 (Monitoraggio Job).
 
-
 MongoDB: docker exec -it mongodb mongosh (Validazione news).
-
 
 Cassandra: docker exec -it cassandra cqlsh (Validazione prezzi).
 
@@ -102,3 +102,4 @@ In caso di problemi durante il caricamento delle news, verificare la presenza de
 Studente: Alfredo La Rosa
 
 Matricola: IN32000135
+

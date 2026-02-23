@@ -1,49 +1,49 @@
-Esame -  Algoritmi e struttura Big Data
-Professore: Giovanni Farina
-Studente: Alfredo La Rosa
-Tipologia: Financial Big Data Pipeline
+Esame -  Algoritmi e struttura Big Data  
+Professore: Giovanni Farina  
+Studente: Alfredo La Rosa  
+Tipologia: Financial Big Data Pipeline  
 
-Questo progetto implementa una pipeline end-to-end per la raccolta, processamento e analisi di dati finanziari (prezzi intraday e news) utilizzando un'architettura a microservizi containerizzata.
+Questo progetto implementa una pipeline end-to-end per la raccolta, processamento e analisi di dati finanziari (prezzi intraday e news) utilizzando un'architettura a microservizi containerizzata.  
 
-Architettura e Tecnologie
-La piattaforma è strutturata secondo il modello Data Lake (Bronze, Silver, Gold Layer) e utilizza:
+Architettura e Tecnologie  
+La piattaforma è strutturata secondo il modello Data Lake (Bronze, Silver, Gold Layer) e utilizza:  
 
-Orchestrazione: Docker & Docker Compose.
+Orchestrazione: Docker & Docker Compose.  
 
-Storage Distribuito: Hadoop HDFS.
+Storage Distribuito: Hadoop HDFS.  
 
-Processing: Apache Spark.
+Processing: Apache Spark.  
 
-Polyglot Persistence: Apache Cassandra (Serie temporali) e MongoDB (Documenti JSON).
+Polyglot Persistence: Apache Cassandra (Serie temporali) e MongoDB (Documenti JSON).  
 
-Overview Architetturale
+Overview Architetturale  
 
-La pipeline implementa un flusso dati end-to-end:
+La pipeline implementa un flusso dati end-to-end:  
 
-Data Source → HDFS (Bronze)
-→ Spark Processing (Silver)
-→ Cassandra / MongoDB (Gold)
-→ Analytics Engine (Decision Support System)
+Data Source → HDFS (Bronze)  
+→ Spark Processing (Silver)  
+→ Cassandra / MongoDB (Gold)  
+→ Analytics Engine (Decision Support System)  
 
-Struttura del Progetto
-Plaintext
+Struttura del Progetto  
+Plaintext  
 .
-├── docker-compose.yml       # Definizione dello stack tecnologico
-├── .env                     # Variabili d'ambiente
-├── scripts/
-│   ├── analytics/           # Engine decisionale (Join Mongo + Cassandra)
-│   ├── automation/          # Script di bootstrap per HDFS e DB NoSQL
-│   ├── ingestion/           # Script Python per download da Yahoo Finance
-│   └── processing/          # Job Spark per trasformazione Parquet e caricamento
-└── docs/                    # Documentazione e report di progetto
+├── docker-compose.yml       # Definizione dello stack tecnologico  
+├── .env                     # Variabili d'ambiente  
+├── scripts/  
+│   ├── analytics/           # Engine decisionale (Join Mongo + Cassandra)  
+│   ├── automation/          # Script di bootstrap per HDFS e DB NoSQL  
+│   ├── ingestion/           # Script Python per download da Yahoo Finance  
+│   └── processing/          # Job Spark per trasformazione Parquet e caricamento  
+└── docs/                    # Documentazione e report di progetto  
 
-Requisiti
+Requisiti  
 
-- Docker Desktop
-- Docker Compose
-- Python 3.10+
-- Connessione Internet (Yahoo Finance API)
-- RAM consigliata: ≥ 8GB
+- Docker Desktop  
+- Docker Compose  
+- Python 3.10+  
+- Connessione Internet (Yahoo Finance API)  
+- RAM consigliata: ≥ 8GB  
 
 Quick Start (Step-by-Step)
 1. Avvio dell'Infrastruttura
@@ -100,4 +100,5 @@ Note sul Troubleshooting
 In caso di problemi durante il caricamento delle news, verificare la presenza del flag --multiLine nel job Spark e assicurarsi che la struttura del JSON sorgente rispetti la navigazione nel campo content.
 
 Studente: Alfredo La Rosa
+
 Matricola: IN32000135

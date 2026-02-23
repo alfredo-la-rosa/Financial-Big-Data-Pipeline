@@ -27,7 +27,7 @@ Data Source → HDFS (Bronze)
 
 Struttura del Progetto  
 Plaintext  
-.
+
 ├── docker-compose.yml       # Definizione dello stack tecnologico  
 ├── .env                     # Variabili d'ambiente  
 ├── scripts/  
@@ -102,4 +102,5 @@ In caso di problemi durante il caricamento delle news, verificare la presenza de
 Studente: Alfredo La Rosa
 
 Matricola: IN32000135
+
 

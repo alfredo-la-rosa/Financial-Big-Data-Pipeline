@@ -86,6 +86,17 @@ PowerShell
 
 L'output mostrerà i segnali di trading (APPROVE/REJECT) basati sulla SMA-20.
 
+Moduli in Fase Beta (Evoluzione del Progetto)  
+Oltre alla pipeline principale, è stato implementato un modulo di analisi avanzata per il calcolo della micro-struttura del mercato:  
+Daily POC (Point of Control) Analysis: Calcola il livello di prezzo con la maggiore concentrazione di volumi degli ultimi 5 giorni, utilizzando dati intraday a 2 minuti.  
+
+Script: scripts/analytics/poc_analysis_spark.py  
+
+Esecuzione:  
+
+PowerShell  
+.\scripts\analytics\run_poc.ps1  
+
 Monitoraggio e Verifica
 
 Hadoop Web UI: http://localhost:9870 (Browsing HDFS).
@@ -102,5 +113,6 @@ In caso di problemi durante il caricamento delle news, verificare la presenza de
 Studente: Alfredo La Rosa
 
 Matricola: IN32000135
+
 
 
